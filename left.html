@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shapes with Faces</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login Page with Animation</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; background-color: #f8f8fc;
+    }
+
+    .container {
+      display: flex;
+      width: 900px;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    /* LEFT SIDE */
+    .left {
+      flex: 1;
+      position: relative;
+      background: #f5f4fd;
+      overflow: hidden;
+    }
+
+    .characters img, 
+    .characters video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* RIGHT SIDE */
+    .right {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .right h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      margin-left: 10px;
+    }
+
+    .right p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    input[type="email"],
+    .password-wrapper {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+
+    input[type="email"] {
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 14px;
+      background-color: transparent;
+    }
+
+    .toggle-password {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #888;
+      padding: 0 8px;
+    }
+
+    .remember {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .google-btn {
+      background: #fff;
+      border: 1px solid #ddd;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .google-btn img {
+      width: 18px;
+    }
+
+    .signup {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+
+    .signup a {
+      color: #7c3aed;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signup a:hover {
+      text-decoration: underline;
+    }
+
+    /* Suggestion Cloud */
+    .suggestion-cloud {
+      position: absolute;
+      left: -320px;
+      top: 50%;
+      transform: translateY(-50%) translateX(-20px);
+      max-width: 280px;
+      background: #cce4ff;
+      color: #084298;
+      font-size: 14px;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow:
+        -30px 0 0 #cce4ff,
+        -20px -10px 0 #cce4ff,
+        -10px 10px 0 #cce4ff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      user-select: none;
+      z-index: 10;
+      font-weight: 600;
+      line-height: 1.3;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1));
+    }
+
+    .suggestion-cloud.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    @media (max-width: 768px) {
+      .container { flex-direction: column; width: 90%; }
+      .left { height: 200px; }
+      .right { padding: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- LEFT SIDE -->
+    <div class="left">
+      <div class="characters" id="characterGroup">
+        <!-- Default Static Image -->
+        <img id="defaultImage" src="shape.png" alt="Shape" />
+
+        <!-- Animation for Password -->
+        <video id="passwordVideo" muted playsinline style="display:none;">
+          <source src="after_email.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+      <h2>Welcome back!</h2>
+      <p>Please enter your details</p>
+      <form novalidate>
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" placeholder="Enter your email" required />
+        <div id="emailSuggestion" class="suggestion-cloud" style="top: 12%;">Please enter a valid email address.</div>
+
+        <label for="passwordInput">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="passwordInput" placeholder="Enter your password" required />
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">👁️</button>
+        </div>
+        <div id="passwordSuggestion" class="suggestion-cloud" style="top: 55%;">Password must be at least 6 characters.</div>
+
+        <div class="remember">
+          <label><input type="checkbox" /> Remember for 30 days</label>
+          <a href="#" style="color:#7c3aed;">Forgot password?</a>
+        </div>
+
+        <button type="submit">Log In</button>
+        <button class="google-btn" type="button">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google" />
+          Log in with Google
+        </button>
+
+        <div class="signup">
+          Don’t have an account? <a href="#">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const togglePassword = document.getElementById('togglePassword');
+    const emailSuggestion = document.getElementById('emailSuggestion');
+    const passwordSuggestion = document.getElementById('passwordSuggestion');
+    const form = document.querySelector('form');
+
+    const defaultImage = document.getElementById('defaultImage');
+    const passwordVideo = document.getElementById('passwordVideo');
+
+    // 🎬 When password field is focused, switch image → video
+    passwordInput.addEventListener('focus', () => {
+      defaultImage.style.display = 'none';
+      passwordVideo.style.display = 'block';
+      passwordVideo.play();
+    });
+
+    passwordInput.addEventListener('blur', () => {
+      passwordVideo.pause();
+      passwordVideo.currentTime = 0;
+      passwordVideo.style.display = 'none';
+      defaultImage.style.display = 'block';
+    });
+
+    // Toggle password visibility
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    // Validation
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+
+    function showSuggestion(el) { el.classList.add('show'); }
+    function hideSuggestion(el) { el.classList.remove('show'); }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      let valid = true;
+
+      if (!validateEmail(email)) {
+        showSuggestion(emailSuggestion);
+        valid = false;
+      } else hideSuggestion(emailSuggestion);
+
+      if (!validatePassword(password)) {
+        showSuggestion(passwordSuggestion);
+        valid = false;
+      } else hideSuggestion(passwordSuggestion);
+
+      if (valid) alert('Form submitted successfully!');
+    });
+
+    emailInput.addEventListener('input', () => {
+      if (validateEmail(emailInput.value.trim())) hideSuggestion(emailSuggestion);
+    });
+
+    passwordInput.addEventListener('input', () => {
+      if (validatePassword(passwordInput.value)) hideSuggestion(passwordSuggestion);
+    });
+  </script>
+</body>
+</html>
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="purple-rect">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="orange-semi">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+    <div class="black-rect">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+    </div>
+    <div class="yellow-rect">
+      <div class="semi-circle"></div>
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="mouth"></div>
+    </div>
+  </div>
+</body>
+</html>
